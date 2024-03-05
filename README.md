@@ -20,6 +20,6 @@ https://formulae.brew.sh/formula/node
 5. ``npm install``
 
 6. ``node index.js qa`` to run on QA environment
-7. ``node index.js staging` to run on staging environment
+7. ``node index.js staging`` to run on staging environment
 
 The server can run on two ports 3002 or 3003, so go to **http://localhost:3002/users** or **http://localhost:3003/users** to test
