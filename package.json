@@ -1,0 +1,14 @@
+{
+  "name": "workshop-envs",
+  "version": "1.0.0",
+  "description": "simple api for practicing env setting in postman",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vesna",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.3"
+  }
+}
