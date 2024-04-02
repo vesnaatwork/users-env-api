@@ -1,14 +1,14 @@
 ## Users API
 
-This is a small API which will be used for API workshop related to using environments and environment variables in Postman. The backend is json file. 
+This is a small API that will be used for an API workshop related to using environments and environment variables in Postman. The backend is json file. 
 
-In order to run this locally, here are preconditions:
+To run this locally, here are the preconditions:
 
- 1. Install brew
+ 1. If you don't have brew, install it (to test if you have it `brew help`. If brew is there, you get output. If not, you get 'command not found')
 
     ``/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"``
 
-2. Install node
+2. Install node if you dont have it
 
 https://formulae.brew.sh/formula/node
 
