@@ -8,18 +8,18 @@ To run this locally, here are the preconditions:
 
     ``/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"``
 
-2. Install node if you dont have it
+2. Install node if you do not have it
 
 https://formulae.brew.sh/formula/node
 
 
 3. Clone the repo
 
-4. cd into project folder
+4. cd into the project folder
 
 5. ``npm install``
 
-6. ``node index.js qa`` to run on QA environment
-7. ``node index.js staging`` to run on staging environment
+6. in one terminal window ``node index.js qa`` to run on QA environment
+7. in another terminal window ``node index.js staging`` to run on staging environment
 
-The server can run on two ports 3002 or 3003, so go to **http://localhost:3002/users** or **http://localhost:3003/users** to test
+The server now runs on two ports 3002 or 3003, so go to **http://localhost:3002/users** or **http://localhost:3003/users** to test
