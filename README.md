@@ -4,7 +4,7 @@ This is a small API that will be used for an API workshop related to using envir
 
 To run this locally, here are the preconditions:
 
- 1. If you don't have brew, install it (to test if you have it `brew help`. If brew is there, you get output. If not, you get 'command not found')
+ 1. If you don't have brew, install it (to test if you have it type `brew help` in Terminal. If brew is there, you get output. If not, you will see 'command not found')
 
     ``/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"``
 
