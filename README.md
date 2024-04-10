@@ -22,4 +22,4 @@ https://formulae.brew.sh/formula/node
 6. in one terminal window ``node index.js qa`` to run on QA environment
 7. in another terminal window ``node index.js staging`` to run on staging environment
 
-The server now runs on two ports 3002 or 3003, so go to **http://localhost:3002/users** or **http://localhost:3003/users** to test
+The server now runs on two ports 3002 or 3003, so go enter in Postman a GET request with **http://localhost:3002/users** or **http://localhost:3003/users** to test
