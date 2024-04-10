@@ -2,9 +2,15 @@
 
 This is a small API that will be used for an API workshop related to using environments and environment variables in Postman. The backend is json file. 
 
-To run this locally, here are the preconditions:
+One nit, chances might be you don't have git on your machine, type this
 
- 1. If you don't have brew, install it (to test if you have it type `brew help` in Terminal. If brew is there, you get output. If not, you will see 'command not found')
+```git --version```
+
+If you see a "Command not found" message, then install git https://git-scm.com/download/mac
+
+To run a server locally, here are the preconditions:
+
+ 1. If you don't have **brew**, install it (to test if you have it type `brew help` in Terminal. If **brew** is there, you get output. If not, you will see 'command not found')
 
     ``/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"``
 
