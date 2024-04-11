@@ -4,11 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
+
 app.use(bodyParser.json());
 
 // Define the environment
 const environment = process.argv[2] || 'qa';
 const usersFilePath = path.join(__dirname, `users_${environment}.json`);
+const users_credentials = JSON.parse(fs.readFileSync('users_basic_auth.json', 'utf8'));
+
 
 // Read user data from the JSON file
 let users = [];
@@ -47,86 +50,109 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-  
-    if (!isNaN(userId)) {
-      const user = users.find(u => u.id === userId);
-  
-      if (user) {
-        res.status(200).json(user);
-      } else {
-        res.status(404).json({ message: 'User not found' });
-      }
+  const userId = parseInt(req.params.id);
+
+  if (!isNaN(userId)) {
+    const user = users.find(u => u.id === userId);
+
+    if (user) {
+      res.status(200).json(user);
     } else {
-      res.status(400).json({ message: 'Invalid user ID' });
+      res.status(404).json({ message: 'User not found' });
     }
-  });
+  } else {
+    res.status(400).json({ message: 'Invalid user ID' });
+  }
+});
 
 // POST endpoint to add a new user
 app.post('/users', (req, res) => {
-    const { name, age } = req.body;
-  
-    if (!name) {
-      res.status(400).json({ message: 'Name is required' });
-      return;
-    }
-  
-    const newUser = {
-      id: generateUniqueId(),
-      name,
-      age: age || null,
-    };
-  
-    users.push(newUser);
+  const { name, age } = req.body;
+
+  if (!name) {
+    res.status(400).json({ message: 'Name is required' });
+    return;
+  }
+
+  const newUser = {
+    id: generateUniqueId(),
+    name,
+    age: age || null,
+  };
+
+  users.push(newUser);
+  writeUsersToFile(); // Update the users file
+  res.status(200).json(newUser);
+});
+
+// PUT endpoint to edit user by ID
+app.put('/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const updatedUser = req.body;
+
+  const index = users.findIndex(u => u.id === userId);
+
+  if (index !== -1 && updatedUser && updatedUser.name && updatedUser.age) {
+    users[index] = { ...users[index], ...updatedUser };
     writeUsersToFile(); // Update the users file
-    res.status(200).json(newUser);
-  });
-  
-  // PUT endpoint to edit user by ID
-  app.put('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const updatedUser = req.body;
-  
-    const index = users.findIndex(u => u.id === userId);
-  
-    if (index !== -1 && updatedUser && updatedUser.name && updatedUser.age) {
-      users[index] = { ...users[index], ...updatedUser };
-      writeUsersToFile(); // Update the users file
-      res.status(200).json(users[index]);
-    } else {
-      res.status(400).json({ message: 'Invalid user data or user not found' });
-    }
-  });
-  
-  // PATCH endpoint to update name and/or age for an existing user
-  app.patch('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const updatedFields = req.body;
-  
-    const index = users.findIndex(u => u.id === userId);
-  
-    if (index !== -1 && updatedFields) {
-      users[index] = { ...users[index], ...updatedFields };
-      writeUsersToFile(); // Update the users file
-      res.status(200).json(users[index]);
-    } else {
-      res.status(400).json({ message: 'Invalid user data or user not found' });
-    }
-  });
-  
-  // DELETE endpoint to delete user by ID
-  app.delete('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const index = users.findIndex(u => u.id === userId);
-  
-    if (index !== -1) {
-      const deletedUser = users.splice(index, 1);
-      writeUsersToFile(); // Update the users file
-      res.status(200).json(deletedUser[0]);
-    } else {
-      res.status(400).json({ message: 'User not found' });
-    }
-  });
+    res.status(200).json(users[index]);
+  } else {
+    res.status(400).json({ message: 'Invalid user data or user not found' });
+  }
+});
+
+// PATCH endpoint to update name and/or age for an existing user
+app.patch('/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const updatedFields = req.body;
+
+  const index = users.findIndex(u => u.id === userId);
+
+  if (index !== -1 && updatedFields) {
+    users[index] = { ...users[index], ...updatedFields };
+    writeUsersToFile(); // Update the users file
+    res.status(200).json(users[index]);
+  } else {
+    res.status(400).json({ message: 'Invalid user data or user not found' });
+  }
+});
+
+// DELETE endpoint to delete user by ID
+app.delete('/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  const index = users.findIndex(u => u.id === userId);
+
+  if (index !== -1) {
+    const deletedUser = users.splice(index, 1);
+    writeUsersToFile(); // Update the users file
+    res.status(200).json(deletedUser[0]);
+  } else {
+    res.status(400).json({ message: 'User not found' });
+  }
+});
+
+
+// AUTHENTICATION 
+
+// POST basic authentication via user name and password
+app.post('/basic_auth/login', (req, res) => {
+  const { username, password } = req.body;
+  console.log(req.body)
+  // console.log(users_credentials)
+  // Check if username exists
+  const user = users_credentials.find(user => user.username === username);
+  if (!user) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+
+  // Compare password
+  // Compare passwords
+  if (user.password !== password) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+
+  return res.status(200).json({ authenticated: true });
+});
 
 // Start the server
 const port = environment === 'qa' ? 3002 : 3003;
