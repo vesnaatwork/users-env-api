@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const app = express();
+const { getUsersCredentials, login_change } = require('./helper');
 
 
 app.use(bodyParser.json());
@@ -10,7 +11,6 @@ app.use(bodyParser.json());
 // Define the environment
 const environment = process.argv[2] || 'qa';
 const usersFilePath = path.join(__dirname, `users_${environment}.json`);
-const users_credentials = JSON.parse(fs.readFileSync('users_basic_auth.json', 'utf8'));
 
 
 // Read user data from the JSON file
@@ -137,22 +137,40 @@ app.delete('/users/:id', (req, res) => {
 // POST basic authentication via user name and password
 app.post('/basic_auth/login', (req, res) => {
   const { username, password } = req.body;
-  console.log(req.body)
-  // console.log(users_credentials)
+  // Refresh creds
+  const users_credentials = getUsersCredentials()
+
   // Check if username exists
   const user = users_credentials.find(user => user.username === username);
   if (!user) {
     return res.status(400).json({ message: 'Bad request' });
   }
 
-  // Compare password
   // Compare passwords
   if (user.password !== password) {
     return res.status(400).json({ message: 'Invalid username or password' });
   }
 
+  login_change(user.username, true)
   return res.status(200).json({ authenticated: true });
 });
+
+
+// DELETE Logout method
+app.delete('/basic_auth/logout', (req, res) => {
+  const { username } = req.body;
+  const users_credentials = getUsersCredentials()
+
+  const user = users_credentials.find(user => user.username === username);
+  if (!user) {
+    return res.status(400).json({ message: 'Bad request' });
+  }
+
+  // Update the loggedIn status for the user to false (logout)
+  login_change(user.username, false)
+  return res.status(200).json({ message: 'Logout successful' });
+});
+
 
 // Start the server
 const port = environment === 'qa' ? 3002 : 3003;

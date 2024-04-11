@@ -1,10 +1,12 @@
 [
   {
     "username": "srdja",
-    "password": "testpassword"
+    "password": "testpassword",
+    "loggedIn": false
   },
   {
     "username": "testuser",
-    "password": "testpassword1"
+    "password": "testpassword1",
+    "loggedIn": false
   }
 ]
