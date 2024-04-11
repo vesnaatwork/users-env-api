@@ -142,13 +142,13 @@ app.post('/basic_auth/login', (req, res) => {
   // Check if username exists
   const user = users_credentials.find(user => user.username === username);
   if (!user) {
-    return res.status(401).json({ message: 'Not authenticated' });
+    return res.status(400).json({ message: 'Bad request' });
   }
 
   // Compare password
   // Compare passwords
   if (user.password !== password) {
-    return res.status(401).json({ message: 'Not authenticated' });
+    return res.status(400).json({ message: 'Invalid username or password' });
   }
 
   return res.status(200).json({ authenticated: true });
