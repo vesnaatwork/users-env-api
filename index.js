@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const { getUsersCredentials, login_change, writeUsersToFile, readUsersFromFile } = require('./helper');
+const { parseArgs } = require('util');
 
 
 app.use(bodyParser.json());
@@ -142,8 +143,26 @@ app.post('/basic_auth/login', (req, res) => {
 });
 
 
-// DELETE Logout method
-app.delete('/basic_auth/logout', (req, res) => {
+app.get('/basic_auth/login/:username', (req, res) => {
+  const username = req.params.username;
+  const users = readUsersFromFile("users_basic_auth.json");
+  console.log(users);
+  console.log(username);
+
+  // Find the user with the given username
+  const user = users.find(u => u.username === username);
+
+  // Check if username exists
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    // If user does not exist
+    res.status(404).json({ message: 'User not found' });
+  }
+});
+
+// POST Logout method
+app.post('/basic_auth/logout', (req, res) => {
   const { username } = req.body;
   const users_credentials = getUsersCredentials()
 
