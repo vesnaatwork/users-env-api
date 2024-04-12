@@ -31,3 +31,40 @@ https://formulae.brew.sh/formula/node
 7. in another terminal window ``node index.js staging`` to run on staging environment
 
 The server now runs on two ports 3002 or 3003, so go enter in Postman a GET request with **http://localhost:3002/users** or **http://localhost:3003/users** to test
+
+
+
+
+# Authentication endpoints:
+
+- **Added basic auth**
+
+- POST /basic_auth/login
+
+BODY
+{
+    "username": "$username",
+    "password": "$password"
+}
+
+RESPONSE
+
+message
+
+- POST /basic_auth/logout
+
+BODY
+{
+   “username”: “$username”
+}
+
+RESPONSE
+
+message
+
+
+-GET /basic_auth/login/{username}
+
+RESPONSE
+
+user data
