@@ -40,31 +40,23 @@ The server now runs on two ports 3002 or 3003, so go enter in Postman a GET requ
 - **Added basic auth**
 
 - POST /basic_auth/login
-
 BODY
 {
     "username": "$username",
     "password": "$password"
 }
-
 RESPONSE
-
 message
 
 - POST /basic_auth/logout
-
 BODY
 {
    “username”: “$username”
 }
-
 RESPONSE
-
 message
 
 
 -GET /basic_auth/login/{username}
-
 RESPONSE
-
 user data
