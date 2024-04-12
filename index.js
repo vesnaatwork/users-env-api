@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const app = express();
-const { getUsersCredentials, login_change } = require('./helper');
+const { getUsersCredentials, login_change, writeUsersToFile, readUsersFromFile } = require('./helper');
 
 
 app.use(bodyParser.json());
@@ -13,24 +13,7 @@ const environment = process.argv[2] || 'qa';
 const usersFilePath = path.join(__dirname, `users_${environment}.json`);
 
 
-// Read user data from the JSON file
-let users = [];
-try {
-  const usersData = fs.readFileSync(usersFilePath, 'utf8');
-  users = JSON.parse(usersData);
-} catch (error) {
-  console.error(`Error reading users file for ${environment} environment:`, error.message);
-}
 
-// Function to write user data to the JSON file
-function writeUsersToFile() {
-  try {
-    const usersData = JSON.stringify(users, null, 2);
-    fs.writeFileSync(usersFilePath, usersData, 'utf8');
-  } catch (error) {
-    console.error(`Error writing users file for ${environment} environment:`, error.message);
-  }
-}
 
 // Function to generate a unique ID for a new user
 function generateUniqueId() {
@@ -40,8 +23,10 @@ function generateUniqueId() {
 // GET endpoint to retrieve all users
 app.get('/users', (req, res) => {
   try {
-    const usersData = fs.readFileSync(usersFilePath, 'utf8');
-    const users = JSON.parse(usersData);
+    const users = readUsersFromFile(usersFilePath);
+    if (users instanceof Error) {
+      throw users; // If readUsersFromFile returns an error, throw it
+    }
     res.status(200).json(users);
   } catch (error) {
     console.error(`Error reading users file for ${environment} environment:`, error.message);
@@ -51,7 +36,7 @@ app.get('/users', (req, res) => {
 
 app.get('/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
-
+  const users = readUsersFromFile(usersFilePath);
   if (!isNaN(userId)) {
     const user = users.find(u => u.id === userId);
 
@@ -81,7 +66,7 @@ app.post('/users', (req, res) => {
   };
 
   users.push(newUser);
-  writeUsersToFile(); // Update the users file
+  writeUsersToFile(usersFilePath); // Update the users file
   res.status(200).json(newUser);
 });
 
@@ -89,7 +74,7 @@ app.post('/users', (req, res) => {
 app.put('/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
   const updatedUser = req.body;
-
+  const users = readUsersFromFile(usersFilePath);
   const index = users.findIndex(u => u.id === userId);
 
   if (index !== -1 && updatedUser && updatedUser.name && updatedUser.age) {
@@ -105,7 +90,7 @@ app.put('/users/:id', (req, res) => {
 app.patch('/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
   const updatedFields = req.body;
-
+  const users = readUsersFromFile(usersFilePath);
   const index = users.findIndex(u => u.id === userId);
 
   if (index !== -1 && updatedFields) {
@@ -120,11 +105,12 @@ app.patch('/users/:id', (req, res) => {
 // DELETE endpoint to delete user by ID
 app.delete('/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
+  const users = readUsersFromFile(usersFilePath);
   const index = users.findIndex(u => u.id === userId);
-
+  
   if (index !== -1) {
     const deletedUser = users.splice(index, 1);
-    writeUsersToFile(); // Update the users file
+    writeUsersToFile(usersFilePath); // Update the users file
     res.status(200).json(deletedUser[0]);
   } else {
     res.status(400).json({ message: 'User not found' });

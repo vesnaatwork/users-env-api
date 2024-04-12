@@ -28,7 +28,30 @@ function getUsersCredentials() {
   }
 }
 
+// Function to write user data to the JSON file
+function writeUsersToFile(usersFilePath) {
+  try {
+    const usersData = JSON.stringify(users, null, 2);
+    fs.writeFileSync(usersFilePath, usersData, 'utf8');
+  } catch (error) {
+    console.error(`Error writing users file for ${environment} environment:`, error.message);
+  }
+}
+
+function readUsersFromFile(usersFilePath) {
+try {
+  const usersData = fs.readFileSync(usersFilePath, 'utf8');
+  users = JSON.parse(usersData);
+  return users;
+} catch (error) {
+  console.error(`Error reading users file for ${environment} environment:`, error.message);
+  return error(`Error reading users file for ${environment} environment:`, error.message)
+}
+}
+
 module.exports = {
   login_change,
-  getUsersCredentials
+  getUsersCredentials,
+  writeUsersToFile,
+  readUsersFromFile
 } 
