@@ -75,7 +75,7 @@ app.post("/users", (req, res) => {
   };
 
   users.push(newUser);
-  writeUsersToFile(usersFilePath, environment); // Update the users file
+  writeUsersToFile(usersFilePath); // Update the users file
   res.status(200).json(newUser);
 });
 
@@ -94,7 +94,7 @@ app.put("/users/:id", (req, res) => {
 
   if (index !== -1 && updatedUser && updatedUser.name && updatedUser.age) {
     users[index] = { ...users[index], ...updatedUser };
-    writeUsersToFile(usersFilePath, environment);
+    writeUsersToFile(usersFilePath);
     res.status(200).json(users[index]);
   } else {
     res.status(400).json({ message: "Invalid user data or user not found" });
@@ -116,7 +116,7 @@ app.patch("/users/:id", (req, res) => {
 
   if (index !== -1 && updatedFields) {
     users[index] = { ...users[index], ...updatedFields };
-    writeUsersToFile(usersFilePath, environment); // Update the users file
+    writeUsersToFile(usersFilePath); // Update the users file
     res.status(200).json(users[index]);
   } else {
     res.status(400).json({ message: "Invalid user data or user not found" });
@@ -137,7 +137,7 @@ app.delete("/users/:id", (req, res) => {
 
   if (index !== -1) {
     const deletedUser = users.splice(index, 1);
-    writeUsersToFile(usersFilePath, environment); // Update the users file
+    writeUsersToFile(usersFilePath); // Update the users file
     res.status(200).json(deletedUser[0]);
   } else {
     res.status(400).json({ message: "User not found" });

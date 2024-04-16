@@ -65,7 +65,7 @@ function getUsersCredentials() {
 }
 
 // Function to write user data to the JSON file
-function writeUsersToFile(usersFilePath, environment) {
+function writeUsersToFile(usersFilePath) {
   try {
     const usersData = JSON.stringify(users, null, 2);
     fs.writeFileSync(usersFilePath, usersData, "utf8");
