@@ -60,7 +60,7 @@ app.post("/users", (req, res) => {
   const result = checkBasicAuthFromRequest(req);
 
   if (!result) {
-    return res.status(400).send("Unauthorized access");
+    return res.status(401).send("Unauthorized access");
   }
 
   if (!name) {
@@ -89,7 +89,7 @@ app.put("/users/:id", (req, res) => {
   const result = checkBasicAuthFromRequest(req);
 
   if (!result) {
-    return res.status(400).send("Unauthorized access");
+    return res.status(401).send("Unauthorized access");
   }
 
   if (index !== -1 && updatedUser && updatedUser.name && updatedUser.age) {
@@ -111,7 +111,7 @@ app.patch("/users/:id", (req, res) => {
   const result = checkBasicAuthFromRequest(req);
 
   if (!result) {
-    return res.status(400).send("Unauthorized access");
+    return res.status(401).send("Unauthorized access");
   }
 
   if (index !== -1 && updatedFields) {
@@ -132,7 +132,7 @@ app.delete("/users/:id", (req, res) => {
   const result = checkBasicAuthFromRequest(req);
 
   if (!result) {
-    return res.status(400).send("Unauthorized access");
+    return res.status(401).send("Unauthorized access");
   }
 
   if (index !== -1) {
