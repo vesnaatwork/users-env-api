@@ -1,17 +1,15 @@
 [
   {
+    "id": 1,
+    "name": "User QA",
+    "age": 25
+  },
+  {
     "id": 2,
-    "name": "srle",
-    "age": 222
+    "name": "User QA",
+    "age": 30
   },
   {
     "id": 3,
-    "name": "srle",
-    "age": 22
-  },
-  {
-    "id": 4,
-    "name": "tijana",
-    "age": 25
-  }
-]
+    "name": "New User QA",
+    "age": 28
