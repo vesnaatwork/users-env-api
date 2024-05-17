@@ -153,14 +153,19 @@ app.post("/basic_auth/login", (req, res) => {
   const users_credentials = getUsersCredentials();
 
   // Check if username exists
+  if (!username || !password) {
+    return res.status(400).json({ message: "Bad request " });
+  }
+
+  // Check if username exists
   const user = users_credentials.find((user) => user.username === username);
   if (!user) {
-    return res.status(400).json({ message: "Bad request" });
+    return res.status(401).json({ message: "Invalid username " });
   }
 
   // Compare passwords
   if (user.password !== password) {
-    return res.status(400).json({ message: "Invalid username or password" });
+    return res.status(401).json({ message: "Invalid password" });
   }
 
   login_change(user.username, true);
