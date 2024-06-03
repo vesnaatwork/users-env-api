@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const app = express();
@@ -205,8 +206,34 @@ app.post("/basic_auth/logout", (req, res) => {
   return res.status(200).json({ message: "Logout successful" });
 });
 
+app.post("/purchase", (req, res) => {
+  const { cipelica, dijamant } = req.body;
+
+  const EnumTypes = {
+    CIPELICE: "cipelica",
+    DIJAMANT: "dijamant",
+  };
+
+  if (cipelica === undefined || dijamant === undefined) {
+    res.status(404).send(`Wrong data sent`);
+    return;
+  }
+
+  if (cipelica && dijamant) {
+    res.status(201).send("Successfully added both items");
+  } else if (cipelica || dijamant) {
+    res.status(201).send("Successfully added one item");
+  } else {
+    res
+      .status(400)
+      .send("Purchase not allowed as none of the items is selected");
+  }
+});
+
 // Start the server
 const port = environment === "qa" ? 3002 : 3003;
+
+app.use(cors());
 
 app.listen(port, () => {
   console.log(
