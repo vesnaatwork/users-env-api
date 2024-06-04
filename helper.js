@@ -99,6 +99,30 @@ function generateUniqueId() {
   return users.length > 0 ? Math.max(...users.map((user) => user.id)) + 1 : 1;
 }
 
+function writeToFile(data, filepath) {
+  try {
+    const data = JSON.stringify(data, null, 2);
+    fs.writeFileSync(filepath, data, "utf8");
+  } catch (error) {
+    console.error(`Error writing to ${filepath}`, error.message);
+  }
+}
+
+function readFromFile(filepath, last, first) {
+  try {
+    const fileContent = fs.readFileSync(filepath, "utf8");
+    data = JSON.parse(fileContent);
+    if (!last) {
+      return data;
+    } else {
+      return data.slice(-1)[0];
+    }
+  } catch (error) {
+    console.error("Error reading files from ${filepath}");
+    error.message;
+  }
+}
+
 module.exports = {
   getEnvPath,
   login_change,

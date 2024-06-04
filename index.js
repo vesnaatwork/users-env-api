@@ -11,6 +11,8 @@ const {
   readUsersFromFile,
   checkBasicAuthFromRequest,
   generateUniqueId,
+  readFromFile,
+  writeToFile,
 } = require("./helper");
 
 const { parseArgs } = require("util");
@@ -234,6 +236,28 @@ app.post("/purchase", (req, res) => {
     res
       .status(400)
       .send("Purchase not allowed as none of the items is selected");
+  }
+});
+
+app.get("/purchase", (req, res) => {
+  const data = readFromFile("purchase_cart.json");
+
+  if (data) {
+    res.status(200).json(data);
+  } else {
+    res.status(404).json({ message: "There is no requested data" });
+  }
+});
+
+app.get("/purchase/last", (req, res) => {
+  const data = readFromFile("purchase_cart.json", (last = true));
+
+  if (data) {
+    res.status(200).json(data);
+  } else {
+    res
+      .status(404)
+      .json({ message: "There is no requested datai for last purchase" });
   }
 });
 
