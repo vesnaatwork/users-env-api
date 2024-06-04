@@ -15,7 +15,12 @@ const {
 
 const { parseArgs } = require("util");
 
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: ["Date"],
+  }),
+);
+
 app.use(express.json());
 app.use(bodyParser.json());
 

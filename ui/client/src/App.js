@@ -17,6 +17,7 @@ function App() {
         status: response.status,
         statusText: response.statusText,
         headers: response.headers,
+        date: response.headers.get("Date"),
         data: response.data,
       });
     } catch (error) {
