@@ -131,4 +131,6 @@ module.exports = {
   readUsersFromFile,
   checkBasicAuthFromRequest,
   generateUniqueId,
+  writeToFile,
+  readFromFile,
 };
