@@ -229,8 +229,10 @@ app.post("/purchase", (req, res) => {
   }
 
   if (cipelica && dijamant) {
+    writeToFile(req.body, "purchase_cart.json");
     res.status(201).send("Successfully added both items");
   } else if (cipelica || dijamant) {
+    writeToFile(req.body, "purchase_cart.json");
     res.status(201).send("Successfully added one item");
   } else {
     res
