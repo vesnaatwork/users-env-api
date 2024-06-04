@@ -5,7 +5,7 @@ import "./App.css";
 function App() {
   const [cipelica, setCipelica] = useState(false);
   const [dijamant, setDijamant] = useState(false);
-  const [message, setMessage] = useState("");
+  const [responseDetails, setResponseDetails] = useState(null);
 
   const handleSubmit = async () => {
     try {
@@ -13,26 +13,41 @@ function App() {
         cipelica: cipelica ? "cipelica" : "",
         dijamant: dijamant ? "dijamant" : "",
       });
-      setMessage(response.data);
+      setResponseDetails({
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+        data: response.data,
+      });
     } catch (error) {
       if (error.response) {
-        setMessage(error.response.data);
+        setResponseDetails({
+          status: error.response.status,
+          statusText: error.response.statusText,
+          headers: error.response.headers,
+          data: error.response.data,
+        });
       } else {
-        setMessage("An error occurred");
+        setResponseDetails({
+          status: "Error",
+          statusText: "An error occurred",
+          headers: {},
+          data: error.message,
+        });
       }
     }
   };
 
   return (
     <div className="App">
-      <h1>Purchase Form Example for Workshops: </h1>
+      <h1>Purchase Form</h1>
       <div>
         <input
           type="checkbox"
           checked={cipelica}
           onChange={(e) => setCipelica(e.target.checked)}
         />
-        <label>👠 Cipelica</label>
+        <label>Cipelica</label>
       </div>
       <div>
         <input
@@ -40,10 +55,28 @@ function App() {
           checked={dijamant}
           onChange={(e) => setDijamant(e.target.checked)}
         />
-        <label>💎 Dijamant</label>
+        <label>Dijamant</label>
       </div>
       <button onClick={handleSubmit}>Send</button>
-      {message && <p>{message}</p>}
+      {responseDetails && (
+        <div className="response-details">
+          <h2>Response Details</h2>
+          <p>
+            <strong>Status:</strong> {responseDetails.status}
+          </p>
+          <p>
+            <strong>Status Text:</strong> {responseDetails.statusText}
+          </p>
+          <p>
+            <strong>Headers:</strong>
+          </p>
+          <pre>{JSON.stringify(responseDetails.headers, null, 2)}</pre>
+          <p>
+            <strong>Data:</strong>
+          </p>
+          <pre>{JSON.stringify(responseDetails.data, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
 }
