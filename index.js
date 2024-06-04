@@ -15,6 +15,8 @@ const {
 
 const { parseArgs } = require("util");
 
+app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
 
 // Define the environment
