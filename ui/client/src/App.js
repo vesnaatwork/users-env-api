@@ -47,7 +47,7 @@ function App() {
           checked={cipelica}
           onChange={(e) => setCipelica(e.target.checked)}
         />
-        <label>Cipelica</label>
+        <label>👠 Cipelica</label>
       </div>
       <div>
         <input
@@ -55,7 +55,7 @@ function App() {
           checked={dijamant}
           onChange={(e) => setDijamant(e.target.checked)}
         />
-        <label>Dijamant</label>
+        <label>💎 Dijamant</label>
       </div>
       <button onClick={handleSubmit}>Send</button>
       {responseDetails && (
