@@ -106,7 +106,7 @@ function App() {
           checked={cipelica}
           onChange={(e) => setCipelica(e.target.checked)}
         />
-        <label>👠 Cipelica</label>
+        <label>👠 </label>
       </div>
       <div>
         <input
@@ -114,7 +114,7 @@ function App() {
           checked={dijamant}
           onChange={(e) => setDijamant(e.target.checked)}
         />
-        <label>💎 Dijamant</label>
+        <label>💎 </label>
       </div>
       <div className="button-container">
         <button onClick={handleSubmit}>Send Items</button>
@@ -135,17 +135,14 @@ function App() {
           </p>
           {Object.entries(responseDetails.headers).map(([key, value]) => (
             <p key={key}>
-              <span>
-                <strong>{key}:</strong>
-              </span>{" "}
-              <span>{value}</span>
+              <strong>{key}:</strong> {value}
             </p>
           ))}
           <div className="data-container">
             <p>
               <strong>Data:</strong>
             </p>
-            <pre>{JSON.stringify(responseDetails.data.message, null, 2)}</pre>
+            <pre>{JSON.stringify(responseDetails.data, null, 2)}</pre>
           </div>
         </div>
       )}
