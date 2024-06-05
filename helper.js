@@ -100,25 +100,40 @@ function generateUniqueId() {
 }
 
 function writeToFile(data, filepath) {
-  try {
-    const data = JSON.stringify(data, null, 2);
-    fs.writeFileSync(filepath, data, "utf8");
-  } catch (error) {
-    console.error(`Error writing to ${filepath}`, error.message);
-  }
+  console.log(data);
+  fs.readFile(filepath, "utf8", (err, readData) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return;
+    }
+
+    try {
+      const jsonData = JSON.parse(readData);
+      jsonData.push(data);
+      fs.writeFile(filepath, JSON.stringify(jsonData, null, 4), (err) => {
+        if (err) {
+          console.error("Error writing file:", err);
+        } else {
+          console.log("New data appended successfully!");
+        }
+      });
+    } catch (err) {
+      console.error("Error parsing JSON:", err);
+    }
+  });
 }
 
 function readFromFile(filepath, last, first) {
   try {
     const fileContent = fs.readFileSync(filepath, "utf8");
-    data = JSON.parse(fileContent);
+    getData = JSON.parse(fileContent);
     if (!last) {
-      return data;
+      return getData;
     } else {
-      return data.slice(-1)[0];
+      return getData[getData.length - 1];
     }
   } catch (error) {
-    console.error("Error reading files from ${filepath}");
+    console.error(`Error reading files from ${filepath}`);
     error.message;
   }
 }

@@ -229,7 +229,8 @@ app.post("/purchase", (req, res) => {
   }
 
   if (cipelica && dijamant) {
-    writeToFile(req.body, "purchase_cart.json");
+    const data = req.body;
+    writeToFile(data, "purchase_cart.json");
     res.status(201).send("Successfully added both items");
   } else if (cipelica || dijamant) {
     writeToFile(req.body, "purchase_cart.json");
@@ -242,8 +243,8 @@ app.post("/purchase", (req, res) => {
 });
 
 app.get("/purchase", (req, res) => {
-  const data = readFromFile("purchase_cart.json");
-
+  const data = readFromFile("purchase_cart.json", false, false);
+  console.log(data);
   if (data) {
     res.status(200).json(data);
   } else {
@@ -259,7 +260,7 @@ app.get("/purchase/last", (req, res) => {
   } else {
     res
       .status(404)
-      .json({ message: "There is no requested datai for last purchase" });
+      .json({ message: "There is no requested datails for last purchase" });
   }
 });
 

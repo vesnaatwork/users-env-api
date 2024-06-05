@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Stash any changes
-git stash
+#git stash
 
 # Pull the latest changes from the repository
-git pull
+#git pull
 
 # Install npm dependencies
 npm install

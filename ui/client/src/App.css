@@ -17,3 +17,36 @@ p {
   margin-top: 20px;
   font-weight: bold;
 }
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 10px;
+}
+
+.button-container button {
+  padding: 10px 20px;
+}
+
+.data-container {
+  background-color: #333; /* Dark shade of gray */
+  border: 1px solid #555; /* Tiny border with slightly lighter gray */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  padding: 20px; /* Padding inside the container */
+  margin-top: 20px; /* Space above the container */
+  color: #fff; /* Text color */
+  font-style: italic; /* Italic text */
+  font-family: 'Georgia', serif; /* Fine print font */
+  border-radius: 5px; /* Optional: Rounded corners */
+}
+
+.data-container h2 {
+  font-size: 1.5em; /* Slightly larger font for heading */
+  margin-bottom: 10px; /* Space below heading */
+}
+
+.data-container p,
+.data-container pre {
+  font-size: 0.9em; /* Fine print font size */
+  line-height: 1.5; /* Line height for readability */
+}
