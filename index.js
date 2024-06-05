@@ -245,7 +245,7 @@ app.post("/purchase", (req, res) => {
 app.get("/purchase", (req, res) => {
   const data = readFromFile("purchase_cart.json", false, false);
   console.log(data);
-  if (data) {
+  if (data.length > 0) {
     res.status(200).json(data);
   } else {
     res.status(404).json({ message: "There is no requested data" });
@@ -254,7 +254,6 @@ app.get("/purchase", (req, res) => {
 
 app.get("/purchase/last", (req, res) => {
   const data = readFromFile("purchase_cart.json", (last = true));
-
   if (data) {
     res.status(200).json(data);
   } else {

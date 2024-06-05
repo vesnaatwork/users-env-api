@@ -133,12 +133,19 @@ function App() {
           <p>
             <strong>Headers:</strong>
           </p>
-          <pre>{JSON.stringify(responseDetails.headers, null, 2)}</pre>
+          {Object.entries(responseDetails.headers).map(([key, value]) => (
+            <p key={key}>
+              <span>
+                <strong>{key}:</strong>
+              </span>{" "}
+              <span>{value}</span>
+            </p>
+          ))}
           <div className="data-container">
             <p>
               <strong>Data:</strong>
             </p>
-            <pre>{JSON.stringify(responseDetails.data, null, 2)}</pre>
+            <pre>{JSON.stringify(responseDetails.data.message, null, 2)}</pre>
           </div>
         </div>
       )}
