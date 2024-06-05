@@ -97,6 +97,66 @@ function App() {
     }
   };
 
+  const handleDeleteLastItem = async () => {
+    try {
+      const response = await axios.delete(
+        "http://localhost:3002/purchase/last",
+      );
+      setResponseDetails({
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+        date: response.headers.get("Date"),
+        data: response.data,
+      });
+    } catch (error) {
+      if (error.response) {
+        setResponseDetails({
+          status: error.response.status,
+          statusText: error.response.statusText,
+          headers: error.response.headers,
+          data: error.response.data,
+        });
+      } else {
+        setResponseDetails({
+          status: "Error",
+          statusText: "An error occurred",
+          headers: {},
+          data: error.message,
+        });
+      }
+    }
+  };
+
+  const handleDeleteCart = async () => {
+    try {
+      const response = await axios.delete("http://localhost:3002/purchase");
+      setResponseDetails({
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+        date: response.headers.get("Date"),
+        data: response.data,
+      });
+    } catch (error) {
+      if (error.response) {
+        setResponseDetails({
+          status: error.response.status,
+          statusText: error.response.statusText,
+          headers: error.response.headers,
+          data: error.response.data,
+        });
+      } else {
+        setResponseDetails({
+          status: "Error",
+          statusText: "An error occurred",
+          headers: {},
+          data: error.message,
+        });
+      }
+    }
+  };
+
   return (
     <div className="App">
       <h1>Purchase Form</h1>
@@ -120,6 +180,12 @@ function App() {
         <button onClick={handleSubmit}>Send Items</button>
         <button onClick={handleGetLastItem}>Get Last Item</button>
         <button onClick={handleGetFullCart}>Get Full Cart</button>
+      </div>
+      <div className="button-container-delete">
+        <button onClick={handleDeleteLastItem}>
+          Remove Last Item from Cart
+        </button>
+        <button onClick={handleDeleteCart}>Empty Whole Cart</button>
       </div>
       {responseDetails && (
         <div className="response-details">

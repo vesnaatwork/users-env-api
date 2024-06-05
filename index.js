@@ -13,6 +13,8 @@ const {
   generateUniqueId,
   readFromFile,
   writeToFile,
+  resetFile,
+  deleteLastItem,
 } = require("./helper");
 
 const { parseArgs } = require("util");
@@ -263,7 +265,27 @@ app.get("/purchase/last", (req, res) => {
   }
 });
 
-// Start the server
+app.delete("/purchase", (req, res) => {
+  const filePath = "purchase_cart.json";
+  try {
+    resetFile(filePath);
+    res.status(200).send({ message: "Purchases have been reset." });
+  } catch (error) {
+    res.status(304).send({ message: "Error resetting purchase cart.", error });
+  }
+});
+
+// DELETE endpoint to delete the last purchase
+app.delete("/purchase/last", (req, res) => {
+  const filePath = "purchase_cart.json";
+  try {
+    deleteLastItem(filePath);
+    res.status(200).send({ message: "Last purchase has been deleted." });
+  } catch (error) {
+    res.status(304).send({ message: "Error deleting last purchase.", error });
+  }
+});
+
 const port = environment === "qa" ? 3002 : 3003;
 
 app.use(cors());

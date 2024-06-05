@@ -28,6 +28,17 @@ p {
   padding: 10px 20px;
 }
 
+.button-container-delete {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 10px;
+  padding: 10px 20px 33px 33px;
+}
+
+.button-container-delete button {
+  color: pink;
+}
+
 .data-container {
   background-color: #333; /* Dark shade of gray */
   border: 1px solid #555; /* Tiny border with slightly lighter gray */

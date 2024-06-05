@@ -138,6 +138,18 @@ function readFromFile(filepath, last, first) {
   }
 }
 
+function resetFile(filePath) {
+  fs.writeFileSync(filePath, JSON.stringify([]), "utf8");
+}
+
+function deleteLastItem(filePath) {
+  const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  if (data.length > 0) {
+    data.pop(); // Remove the last item
+    fs.writeFileSync(filePath, JSON.stringify(data), "utf8");
+  }
+}
+
 module.exports = {
   getEnvPath,
   login_change,
@@ -148,4 +160,6 @@ module.exports = {
   generateUniqueId,
   writeToFile,
   readFromFile,
+  resetFile,
+  deleteLastItem,
 };
