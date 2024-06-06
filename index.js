@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const app = express();
@@ -10,10 +11,21 @@ const {
   readUsersFromFile,
   checkBasicAuthFromRequest,
   generateUniqueId,
+  readFromFile,
+  writeToFile,
+  resetFile,
+  deleteLastItem,
 } = require("./helper");
 
 const { parseArgs } = require("util");
 
+app.use(
+  cors({
+    exposedHeaders: ["Date"],
+  }),
+);
+
+app.use(express.json());
 app.use(bodyParser.json());
 
 // Define the environment
@@ -25,7 +37,7 @@ app.get("/users", (req, res) => {
   try {
     const users = readUsersFromFile(usersFilePath);
     if (users instanceof Error) {
-      throw users; // If readUsersFromFile returns an error, throw it
+      throw users;
     }
     res.status(200).json(users);
   } catch (error) {
@@ -205,8 +217,78 @@ app.post("/basic_auth/logout", (req, res) => {
   return res.status(200).json({ message: "Logout successful" });
 });
 
-// Start the server
+app.post("/purchase", (req, res) => {
+  const { cipelica, dijamant } = req.body;
+
+  const EnumTypes = {
+    CIPELICE: "cipelica",
+    DIJAMANT: "dijamant",
+  };
+
+  if (cipelica === undefined || dijamant === undefined) {
+    res.status(404).send(`Wrong data sent`);
+    return;
+  }
+
+  if (cipelica && dijamant) {
+    const data = req.body;
+    writeToFile(data, "purchase_cart.json");
+    res.status(201).send("Successfully added both items");
+  } else if (cipelica || dijamant) {
+    writeToFile(req.body, "purchase_cart.json");
+    res.status(201).send("Successfully added one item");
+  } else {
+    res
+      .status(400)
+      .send("Purchase not allowed as none of the items is selected");
+  }
+});
+
+app.get("/purchase", (req, res) => {
+  const data = readFromFile("purchase_cart.json", false, false);
+  console.log(data);
+  if (data.length > 0) {
+    res.status(200).json(data);
+  } else {
+    res.status(404).json({ message: "There is no requested data" });
+  }
+});
+
+app.get("/purchase/last", (req, res) => {
+  const data = readFromFile("purchase_cart.json", (last = true));
+  if (data) {
+    res.status(200).json(data);
+  } else {
+    res
+      .status(404)
+      .json({ message: "There is no requested datails for last purchase" });
+  }
+});
+
+app.delete("/purchase", (req, res) => {
+  const filePath = "purchase_cart.json";
+  try {
+    resetFile(filePath);
+    res.status(200).send({ message: "Purchases have been reset." });
+  } catch (error) {
+    res.status(304).send({ message: "Error resetting purchase cart.", error });
+  }
+});
+
+// DELETE endpoint to delete the last purchase
+app.delete("/purchase/last", (req, res) => {
+  const filePath = "purchase_cart.json";
+  try {
+    deleteLastItem(filePath);
+    res.status(200).send({ message: "Last purchase has been deleted." });
+  } catch (error) {
+    res.status(304).send({ message: "Error deleting last purchase.", error });
+  }
+});
+
 const port = environment === "qa" ? 3002 : 3003;
+
+app.use(cors());
 
 app.listen(port, () => {
   console.log(

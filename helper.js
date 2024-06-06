@@ -99,6 +99,57 @@ function generateUniqueId() {
   return users.length > 0 ? Math.max(...users.map((user) => user.id)) + 1 : 1;
 }
 
+function writeToFile(data, filepath) {
+  console.log(data);
+  fs.readFile(filepath, "utf8", (err, readData) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return;
+    }
+
+    try {
+      const jsonData = JSON.parse(readData);
+      jsonData.push(data);
+      fs.writeFile(filepath, JSON.stringify(jsonData, null, 4), (err) => {
+        if (err) {
+          console.error("Error writing file:", err);
+        } else {
+          console.log("New data appended successfully!");
+        }
+      });
+    } catch (err) {
+      console.error("Error parsing JSON:", err);
+    }
+  });
+}
+
+function readFromFile(filepath, last, first) {
+  try {
+    const fileContent = fs.readFileSync(filepath, "utf8");
+    getData = JSON.parse(fileContent);
+    if (!last) {
+      return getData;
+    } else {
+      return getData[getData.length - 1];
+    }
+  } catch (error) {
+    console.error(`Error reading files from ${filepath}`);
+    error.message;
+  }
+}
+
+function resetFile(filePath) {
+  fs.writeFileSync(filePath, JSON.stringify([]), "utf8");
+}
+
+function deleteLastItem(filePath) {
+  const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  if (data.length > 0) {
+    data.pop(); // Remove the last item
+    fs.writeFileSync(filePath, JSON.stringify(data), "utf8");
+  }
+}
+
 module.exports = {
   getEnvPath,
   login_change,
@@ -107,4 +158,8 @@ module.exports = {
   readUsersFromFile,
   checkBasicAuthFromRequest,
   generateUniqueId,
+  writeToFile,
+  readFromFile,
+  resetFile,
+  deleteLastItem,
 };
