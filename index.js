@@ -37,7 +37,7 @@ app.get("/users", (req, res) => {
   try {
     const users = readUsersFromFile(usersFilePath);
     if (users instanceof Error) {
-      throw users; // If readUsersFromFile returns an error, throw it
+      throw users;
     }
     res.status(200).json(users);
   } catch (error) {
