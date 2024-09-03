@@ -157,22 +157,25 @@ app.delete("/users/:id", (req, res) => {
 });
 
 // AUTHENTICATION
-
-// POST basic authentication via user name and password
 app.post("/basic_auth/login", (req, res) => {
-  const { username, password } = req.body;
+  // Extract username and password from request headers
+  const username = req.headers["username"];
+  const password = req.headers["password"];
+
   // Refresh creds
   const users_credentials = getUsersCredentials();
 
-  // Check if username exists
+  // Check if username and password exist
   if (!username || !password) {
-    return res.status(400).json({ message: "Bad request " });
+    return res
+      .status(400)
+      .json({ message: "Bad request username or password are missing" });
   }
 
   // Check if username exists
   const user = users_credentials.find((user) => user.username === username);
   if (!user) {
-    return res.status(401).json({ message: "Invalid username " });
+    return res.status(401).json({ message: "Invalid username" });
   }
 
   // Compare passwords
@@ -184,35 +187,34 @@ app.post("/basic_auth/login", (req, res) => {
   return res.status(200).json({ authenticated: true });
 });
 
+//Get user status
 app.get("/basic_auth/login/:username", (req, res) => {
+  // Extract the username from the request parameters
   const username = req.params.username;
-  const users = readUsersFromFile("users_basic_auth.json");
-  console.log(users);
-  console.log(username);
+  const users_credentials = getUsersCredentials();
 
-  // Find the user with the given username
-  const user = users.find((u) => u.username === username);
-
-  // Check if username exists
-  if (user) {
-    res.status(200).json(user);
+  const user = users_credentials.find((user) => user.username === username);
+  if (!user) {
+    return res.status(400).json({ message: "User not loggedin request" });
   } else {
-    // If user does not exist
-    res.status(404).json({ message: "User not found" });
+    return res
+      .status(200)
+      .json({ username: user.username, loggedIn: user.loggedIn });
   }
 });
 
 // POST Logout method
 app.post("/basic_auth/logout", (req, res) => {
-  const { username } = req.body;
+  // Extract username from request headers
+  const username = req.headers["username"];
+
   const users_credentials = getUsersCredentials();
 
   const user = users_credentials.find((user) => user.username === username);
   if (!user) {
-    return res.status(400).json({ message: "Bad request" });
+    return res.status(400).json({ message: "User not loggedin request" });
   }
 
-  // Update the loggedIn status for the user to false (logout)
   login_change(user.username, false);
   return res.status(200).json({ message: "Logout successful" });
 });
