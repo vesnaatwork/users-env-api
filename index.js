@@ -15,6 +15,8 @@ const {
   writeToFile,
   resetFile,
   deleteLastItem,
+  checkCredentials,
+  handleError,
 } = require("./helper");
 
 const { parseArgs } = require("util");
@@ -31,6 +33,17 @@ app.use(bodyParser.json());
 // Define the environment
 const environment = process.argv[2] || "qa";
 const usersFilePath = getEnvPath(environment);
+
+// Developement test route
+app.get("/test", (req, res) => {
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
+  }
+  res
+    .status(200)
+    .json({ message: "Authorized access for user: " + user.username });
+});
 
 // GET endpoint to retrieve all users
 app.get("/users", (req, res) => {
@@ -71,8 +84,9 @@ app.post("/users", (req, res) => {
   const users = readUsersFromFile(usersFilePath);
   const result = checkBasicAuthFromRequest(req);
 
-  if (!result) {
-    return res.status(401).send("Unauthorized access");
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
   }
 
   if (!name) {
@@ -98,10 +112,9 @@ app.put("/users/:id", (req, res) => {
   const users = readUsersFromFile(usersFilePath, environment);
   const index = users.findIndex((u) => u.id === userId);
 
-  const result = checkBasicAuthFromRequest(req);
-
-  if (!result) {
-    return res.status(401).send("Unauthorized access");
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
   }
 
   if (index !== -1 && updatedUser && updatedUser.name && updatedUser.age) {
@@ -120,10 +133,9 @@ app.patch("/users/:id", (req, res) => {
   const users = readUsersFromFile(usersFilePath);
   const index = users.findIndex((u) => u.id === userId);
 
-  const result = checkBasicAuthFromRequest(req);
-
-  if (!result) {
-    return res.status(401).send("Unauthorized access");
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
   }
 
   if (index !== -1 && updatedFields) {
@@ -141,10 +153,9 @@ app.delete("/users/:id", (req, res) => {
   const users = readUsersFromFile(usersFilePath);
   const index = users.findIndex((u) => u.id === userId);
 
-  const result = checkBasicAuthFromRequest(req);
-
-  if (!result) {
-    return res.status(401).send("Unauthorized access");
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
   }
 
   if (index !== -1) {
@@ -158,65 +169,24 @@ app.delete("/users/:id", (req, res) => {
 
 // AUTHENTICATION
 app.post("/basic_auth/login", (req, res) => {
-  // Extract username and password from request headers
-  const username = req.headers["username"];
-  const password = req.headers["password"];
-
-  // Refresh creds
-  const users_credentials = getUsersCredentials();
-
-  // Check if username and password exist
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Bad request username or password are missing" });
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
   }
-
-  // Check if username exists
-  const user = users_credentials.find((user) => user.username === username);
-  if (!user) {
-    return res.status(401).json({ message: "Invalid username" });
-  }
-
-  // Compare passwords
-  if (user.password !== password) {
-    return res.status(401).json({ message: "Invalid password" });
-  }
-
-  login_change(user.username, true);
-  return res.status(200).json({ authenticated: true });
+  res
+    .status(200)
+    .json({ message: "Authorized access for user: " + user.username });
 });
 
 //Get user status
 app.get("/basic_auth/login/:username", (req, res) => {
-  // Extract the username from the request parameters
-  const username = req.params.username;
-  const users_credentials = getUsersCredentials();
-
-  const user = users_credentials.find((user) => user.username === username);
-  if (!user) {
-    return res.status(400).json({ message: "User not loggedin request" });
-  } else {
-    return res
-      .status(200)
-      .json({ username: user.username, loggedIn: user.loggedIn });
+  const credentialError = checkCredentials(req);
+  if (credentialError) {
+    return handleError(res, credentialError);
   }
-});
-
-// POST Logout method
-app.post("/basic_auth/logout", (req, res) => {
-  // Extract username from request headers
-  const username = req.headers["username"];
-
-  const users_credentials = getUsersCredentials();
-
-  const user = users_credentials.find((user) => user.username === username);
-  if (!user) {
-    return res.status(400).json({ message: "User not loggedin request" });
-  }
-
-  login_change(user.username, false);
-  return res.status(200).json({ message: "Logout successful" });
+  return res
+    .status(200)
+    .json({ username: user.username, loggedIn: user.loggedIn });
 });
 
 app.post("/purchase", (req, res) => {
