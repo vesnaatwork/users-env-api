@@ -7,6 +7,82 @@ function getEnvPath(environment) {
   return usersFilePath;
 }
 
+function handleError(res, errorType) {
+  let statusCode;
+  let message;
+
+  switch (errorType) {
+    case "missing_auth":
+      statusCode = 400;
+      message = "Authroization is Required!";
+      break;
+    case "missing_username":
+      statusCode = 400;
+      message = "Username is Required!";
+      break;
+    case "missing_password":
+      statusCode = 400;
+      message = "Password is Required!";
+      break;
+    case "wrong_username":
+      statusCode = 401;
+      message = "Username is Incorect!";
+      break;
+    case "wrong_password":
+      statusCode = 401;
+      message = "Password is Incorect!";
+      break;
+    case "error":
+      statusCode = 500;
+      message = "user_parse_error";
+    default:
+      statusCode = 500;
+      message = "Something went wrong";
+  }
+
+  return res.status(statusCode).json({
+    status: statusCode,
+    error: message,
+  });
+}
+
+function checkCredentials(req) {
+  if (!req.headers || !req.headers.authorization) {
+    return "missing_auth";
+  }
+
+  const authHeader = req.headers.authorization;
+  const credentials = base64.decode(authHeader.substring(6));
+  const [username, password] = credentials.split(":");
+  const usersFilePath = path.join(__dirname, "users_basic_auth.json");
+  const users = JSON.parse(fs.readFileSync(usersFilePath, "utf-8"));
+  const foundUser = users.find((u) => u.username === username);
+
+  if (!username) {
+    return "missing_username";
+  }
+  if (!password) {
+    return "missing_password";
+  }
+  if (!foundUser) {
+    return "wrong_username";
+  }
+
+  for (user of users) {
+    if (user.username === username && user.password != password) {
+      return "wrong_password";
+    }
+  }
+
+  for (const user of users) {
+    if (user.username === username && user.password === password) {
+      console.log("User Authorized: " + user.username);
+      return null;
+    }
+  }
+  return "user_parse_error";
+}
+
 function checkBasicAuthFromRequest(request) {
   if (!request.headers || !request.headers.authorization) {
     console.log("Request headers not passed");
@@ -162,4 +238,6 @@ module.exports = {
   readFromFile,
   resetFile,
   deleteLastItem,
+  checkCredentials,
+  handleError,
 };
