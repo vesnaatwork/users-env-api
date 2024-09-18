@@ -14,7 +14,7 @@ function handleError(res, errorType) {
   switch (errorType) {
     case "missing_auth":
       statusCode = 400;
-      message = "Authroization is Required!";
+      message = "Authorization is Required!";
       break;
     case "missing_username":
       statusCode = 400;
