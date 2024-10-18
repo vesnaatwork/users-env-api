@@ -40,8 +40,4 @@ The server now runs on two ports 3002 or 3003, so go enter in Postman a GET requ
 - **Added basic auth**
 
 In postman choose basic authe and use username and password from the users.json file in the project
-
-
--GET /basic_auth/login/{username}
-RESPONSE
-user data
+https://github.com/vesnaatwork/users-env-api/blob/main/users_basic_auth.json
